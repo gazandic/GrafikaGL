@@ -22,10 +22,11 @@ void render(void)
    // initial position
 
   glBegin(GL_TRIANGLES);
-  glColor3f(0.1, 0.5, 0.4);
+  glColor3f(0.7, 0.3, 0.2);
   glVertex3f(0, 0, 0);
-  glColor3f(0.6, 0.2, 0.7);
+  glColor3f(0.1, 0.2, 0.7);
   glVertex3f(-1, 0, 0);
+  glColor3f(0.1, 0.6, 0.1);
   glVertex3f(0, -1, 0);
 
   glEnd();
