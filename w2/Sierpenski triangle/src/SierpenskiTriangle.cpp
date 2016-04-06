@@ -1,6 +1,7 @@
-#include<stdio.h>
-#include<GL/glut.h>
+#include <stdio.h>
+#include <GL/glut.h>
 
+static bool fullscreen = false;
 void OpenGLInit()
 {
     glMatrixMode(GL_PROJECTION);
