@@ -5,6 +5,8 @@
 #include <GL/glut.h>
 
 static bool fullscreen = false;
+int N = 200;    // default density
+
 void OpenGLInit()
 {
   glClearColor(0.0, 0.0, 0.0, 0.0);
@@ -17,17 +19,21 @@ void OpenGLInit()
 
 void render( void )
 {
-  GLfloat vertices[3][2]={{0.0,0.0},{25.0,50.0},{50.0,0.0}}; 
+  GLfloat vertices[3][2] = {
+    {0.0, 0.0},
+    {25.0, 50.0},
+    {50.0, 0.0}
+  }; 
   int j, k;
   int rand();      
-  GLfloat p[2] ={7.5,5.0};  
+  GLfloat p[2] = {7.5, 5.0};  
   glClear(GL_COLOR_BUFFER_BIT); 
   glBegin(GL_POINTS);
-  for( k=0; k<2000; k++)
+  for(k = 0; k < N; k++)
   {
-       j=rand()%3;
-       p[0] = (p[0]+vertices[j][0])/2.0; 
-       p[1] = (p[1]+vertices[j][1])/2.0;
+      j = rand() % 3;
+      p[0] = (p[0]+vertices[j][0]) / 2.0; 
+      p[1] = (p[1]+vertices[j][1]) / 2.0;
       glVertex2fv(p);
   }
   glEnd();
@@ -44,7 +50,7 @@ static void KeyPressFunc( unsigned char Key, int x, int y )
                 fullscreen = true;
             } else if(fullscreen){
                 glutReshapeWindow(300, 300);
-                glutPositionWindow(600,600);
+                glutPositionWindow(800, 800);
                 fullscreen = false;
             }
             break;
@@ -62,11 +68,13 @@ static void KeyPressFunc( unsigned char Key, int x, int y )
 }
 int main(int argc, char** argv)
 {
-    glutInit(&argc,argv);
+    printf("Density : ");
+    scanf("%d", &N);
+    glutInit(&argc, argv);
     glutInitDisplayMode (GLUT_SINGLE | GLUT_RGB); 
-    glutInitWindowPosition(300,300);
-    glutInitWindowSize( 600, 600 );
-    glutCreateWindow("Sierpinski Gasket");
+    glutInitWindowPosition(300, 300);
+    glutInitWindowSize( 800, 800 );
+    glutCreateWindow("Sierpinski Point");
     glutKeyboardFunc( KeyPressFunc ); 
     glutDisplayFunc(render); 
     OpenGLInit();
