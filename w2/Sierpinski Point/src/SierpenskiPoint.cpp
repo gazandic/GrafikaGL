@@ -1,5 +1,6 @@
 // #pragma comment(lib, "glew32.lib")
 #include <iostream>
+#include <stdio.h>
 #include <stdlib.h>
 #include <GL/gl.h>
 #include <GL/glut.h>
