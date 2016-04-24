@@ -4,6 +4,7 @@
 #include "Cube.hpp"
 GLfloat xRotated = (GLfloat) -45, yRotated=(GLfloat) -45, zRotated= (GLfloat) 0;
 int iterasi=1;
+float fsize = 0.15f;
 const float eps = 0.0001;
 Cube list[27];
 GLuint textures;
@@ -13,6 +14,7 @@ GLuint texture3;
 GLuint texture4;
 GLuint texture5;
 GLuint texture6;
+float xtranslate =0, ytranslate = 0, ztranslate=0;
 float position[27][3] = {
   {-0.3,-0.3,-0.3},
   {-0.3,-0.3,0},
@@ -46,7 +48,7 @@ float position[27][3] = {
 GLuint LoadTexture( const char * filename )
 {
     int width, height;
-    BYTE * data;
+    unsigned char * data;
     FILE * file;
     GLuint texture;
     // open texture data
@@ -56,7 +58,7 @@ GLuint LoadTexture( const char * filename )
     // allocate buffer
     width = 256;
     height = 256;
-    data = (BYTE*) malloc( width * height * 3 );
+    data = (unsigned char*) malloc( width * height * 3 );
 
     // read texture data
     fread( data, width * height * 3, 1, file );
@@ -94,8 +96,8 @@ void OpenGLInit(void)
     //glEnable(GL_TEXTURE_GEN_T);
     // load our texture
     glEnable( GL_TEXTURE_2D );  
-    texture2 = LoadTexture( "texture2.bmp");
     texture1 = LoadTexture( "bricks.bmp");
+    //glDisable(GL_TEXTURE_2D) ;
 }
 
 void render(void)
@@ -111,7 +113,6 @@ void render(void)
         // rotation about Z axis
         glRotatef(zRotated,0.0,0.0,0.3);
         glTranslatef(list[i].getX(),list[i].getY(),list[i].getZ());
-
         glRotatef(list[i].getXRotated(),0.3,0.0,0.0);
         // // rotation about Y axis
         glRotatef(list[i].getYRotated(),0.0,0.3,0.0);
@@ -137,78 +138,104 @@ void render(void)
         //glGenTextures( 1, &texture1 );
         glBindTexture( GL_TEXTURE_2D, texture1 );
         glTexCoord2d(0.0,0.0);
-        glVertex3f(0.15f, 0.15f, -0.15f);
+        glVertex3f(fsize, fsize, -fsize);
         glTexCoord2d(1.0,0.0);
-        glVertex3f(-0.15f, 0.15f, -0.15f);
+        glVertex3f(-fsize, fsize, -fsize);
         glTexCoord2d(0.0,1.0);
-        glVertex3f(-0.15f, 0.15f,  0.15f);
+        glVertex3f(-fsize, fsize,  fsize);
         glTexCoord2d(1.0,1.0);
-        glVertex3f( 0.15f, 0.15f,  0.15f);
-        glDeleteTextures( 1, &texture1 );
-
-        // Bottom face (y = -0.15f)
+        glVertex3f( fsize, fsize,  fsize);
+        // Bottom face (y = -fsize)
         glColor3f(1.0f, 1.0f, 1.0f);     // White
         //glGenTextures( 1, &texture2 );
-        glBindTexture( GL_TEXTURE_2D, texture2 );
-        glTexCoord2d(0.0,0.0);
-        glVertex3f( 0.15f, -0.15f,  0.15f);
-        glTexCoord2d(0.0,1.0);
-        glVertex3f(-0.15f, -0.15f,  0.15f);
-        glTexCoord2d(1.0,0.0);
-        glVertex3f(-0.15f, -0.15f, -0.15f);
-        glTexCoord2d(1.0,1.0);
-        glVertex3f( 0.15f, -0.15f, -0.15f);
-        glDeleteTextures( 1, &texture2 );
 
-        // Front face  (z = 0.15f)
+        glTexCoord2d(0.0,0.0);
+        glVertex3f( fsize, -fsize,  fsize);
+        glTexCoord2d(0.0,1.0);
+        glVertex3f(-fsize, -fsize,  fsize);
+        glTexCoord2d(1.0,0.0);
+        glVertex3f(-fsize, -fsize, -fsize);
+        glTexCoord2d(1.0,1.0);
+        glVertex3f( fsize, -fsize, -fsize);
+        // Front face  (z = fsize)
         glColor3f(1.0f, 0.0f, 0.0f);     // Red
         glTexCoord2d(0.0,0.0);
-        glVertex3f( 0.15f,  0.15f, 0.15f);
+        glVertex3f( fsize,  fsize, fsize);
         glTexCoord2d(0.0,1.0);
-        glVertex3f(-0.15f,  0.15f, 0.15f);
+        glVertex3f(-fsize,  fsize, fsize);
         glTexCoord2d(1.0,0.0);
-        glVertex3f(-0.15f, -0.15f, 0.15f);
+        glVertex3f(-fsize, -fsize, fsize);
         glTexCoord2d(1.0,1.0);
-        glVertex3f( 0.15f, -0.15f, 0.15f);
+        glVertex3f( fsize, -fsize, fsize);
 
-        // Back face (z = -0.15f)
-        glColor3f(0.0f, 1.0f, 0.0f);     // Orange
+        // Back face (z = -fsize)
+        glColor3f(1.0f, 0.5f, 0.0f);     // Orange
         glTexCoord2d(0.0,0.0);
-        glVertex3f( 0.15f, -0.15f, -0.15f);
+        glVertex3f( fsize, -fsize, -fsize);
         glTexCoord2d(0.0,1.0);
-        glVertex3f(-0.15f, -0.15f, -0.15f);
+        glVertex3f(-fsize, -fsize, -fsize);
         glTexCoord2d(1.0,0.0);
-        glVertex3f(-0.15f,  0.15f, -0.15f);
+        glVertex3f(-fsize,  fsize, -fsize);
         glTexCoord2d(1.0,1.0);
-        glVertex3f( 0.15f,  0.15f, -0.15f);
+        glVertex3f( fsize,  fsize, -fsize);
 
-        // Left face (x = -0.15f)
+        // Left face (x = -fsize)
         glColor3f(0.0f, 0.0f, 1.0f);     // Blue
         glTexCoord2d(0.0,0.0);
-        glVertex3f(-0.15f,  0.15f,  0.15f);
+        glVertex3f(-fsize,  fsize,  fsize);
         glTexCoord2d(0.0,1.0);
-        glVertex3f(-0.15f,  0.15f, -0.15f);
+        glVertex3f(-fsize,  fsize, -fsize);
         glTexCoord2d(1.0,0.0);
-        glVertex3f(-0.15f, -0.15f, -0.15f);
+        glVertex3f(-fsize, -fsize, -fsize);
         glTexCoord2d(1.0,1.0);
-        glVertex3f(-0.15f, -0.15f,  0.15f);
+        glVertex3f(-fsize, -fsize,  fsize);
 
-        // Right face (x = 0.15f)
-        glColor3f(0.0f, 1.0f, 1.0f);     // Green
+        // Right face (x = fsize)
+        glColor3f(0.0f, 1.0f, 0.0f);     // Green
         glTexCoord2d(0.0,0.0);
-        glVertex3f(0.15f,  0.15f, -0.15f);
+        glVertex3f(fsize,  fsize, -fsize);
         glTexCoord2d(0.0,1.0);
-        glVertex3f(0.15f,  0.15f,  0.15f);
+        glVertex3f(fsize,  fsize,  fsize);
         glTexCoord2d(1.0,0.0);
-        glVertex3f(0.15f, -0.15f,  0.15f);
+        glVertex3f(fsize, -fsize,  fsize);
         glTexCoord2d(1.0,1.0);
-        glVertex3f(0.15f, -0.15f, -0.15f);
+        glVertex3f(fsize, -fsize, -fsize);
         
         glEnd();  // End of drawing color-cube
      
     }
 
     glutSwapBuffers();
+}
+static void MouseFunc  (int button, int state, int x, int y){
+    if(button==0){
+        if(state==GLUT_DOWN){
+            xtranslate =(float) 0.4f * (x-300) / 600 ;
+            ytranslate = (float) 0.4f * (y-300) / 600 ;
+            if(xtranslate>1.0f) xtranslate = 1.0f;
+            else if(xtranslate<-1.0f) xtranslate = -1.0f;
+            if(ytranslate>1.0f)ytranslate = 1.0f;
+            else if(ytranslate<-1.0f)ytranslate = -1.0f;
+        }
+        else if(state==GLUT_UP){
+            xtranslate -=(float) 0.4f * (x-300) / 600 ;
+            ytranslate -= (float) 0.4f * (y-300) / 600 ;
+
+            if(xtranslate>1.0f) xtranslate = 1.0f;
+            else if(xtranslate<-1.0f)xtranslate = -1.0f;
+
+            if(ytranslate>1.0f) ytranslate = 1.0f;
+            else if(ytranslate<-1.0f)ytranslate = -1.0f;
+
+            if(ytranslate>0.0f) xRotated +=90*ytranslate*3;
+            else xRotated +=90*ytranslate*3;
+
+            if(xtranslate>0.0f) yRotated +=90*xtranslate*3;
+            else yRotated +=90*xtranslate*3;
+        }
+
+    }
+
 }
 
 static void KeyPressFunc( unsigned char Key, int x, int y )
@@ -232,18 +259,6 @@ static void KeyPressFunc( unsigned char Key, int x, int y )
         case 'S':
         case 's': //toggle screenmode
             glutShowWindow();
-            break;
-        case 'z':
-        case 'Z': //toggle screenmode
-            zRotated +=90;
-            break;
-        case 'x':
-        case 'X': //toggle screenmode
-            xRotated +=90;
-            break;
-        case 'y':
-        case 'Y': //toggle screenmode
-            yRotated +=90;
             break;
 
         case 'r': //toggle screenmode
@@ -369,6 +384,7 @@ int main( int argc, char** argv )
   //glutFullScreen();
   
   OpenGLInit();
+  glutMouseFunc(MouseFunc);
   glutKeyboardFunc( KeyPressFunc );
   glutDisplayFunc(render);
   glutIdleFunc(animation);
