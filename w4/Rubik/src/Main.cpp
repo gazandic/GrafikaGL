@@ -3,10 +3,16 @@
 // #include <GL/glew.h>
 #include "Cube.hpp"
 GLfloat xRotated = (GLfloat) -45, yRotated=(GLfloat) -45, zRotated= (GLfloat) 0;
-
+int iterasi=1;
 const float eps = 0.0001;
 Cube list[27];
-GLuint texture;
+GLuint textures;
+GLuint texture1;
+GLuint texture2;
+GLuint texture3;
+GLuint texture4;
+GLuint texture5;
+GLuint texture6;
 float position[27][3] = {
   {-0.3,-0.3,-0.3},
   {-0.3,-0.3,0},
@@ -37,12 +43,12 @@ float position[27][3] = {
   {0.3,0.3,0.3}
 };
 // load a 256x256 RGB .RAW file as a texture
-GLuint LoadTextureRAW( const char * filename, int wrap )
+GLuint LoadTexture( const char * filename )
 {
     int width, height;
     BYTE * data;
     FILE * file;
-
+    GLuint texture;
     // open texture data
     file = fopen( filename, "rb" );
     if ( file == NULL ) return 0;
@@ -58,30 +64,17 @@ GLuint LoadTextureRAW( const char * filename, int wrap )
 
     // allocate a texture name
     glGenTextures( 1, &texture );
-
     // select our current texture
     glBindTexture( GL_TEXTURE_2D, texture );
-
-    // select modulate to mix texture with color for shading
-    glTexEnvf( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
-
-    // when texture area is small, bilinear filter the closest mipmap
-    glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
-                     GL_LINEAR_MIPMAP_NEAREST );
-    // when texture area is large, bilinear filter the first mipmap
-    glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
-
-    // if wrap is true, the texture wraps over at the edges (repeat)
-    //       ... false, the texture ends at the edges (clamp)
-    glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S,
-                     wrap ? GL_REPEAT : GL_CLAMP );
-    glTexParameterf( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T,
-                     wrap ? GL_REPEAT : GL_CLAMP );
 
     // build our texture mipmaps
     gluBuild2DMipmaps( GL_TEXTURE_2D, 3, width, height,
                        GL_RGB, GL_UNSIGNED_BYTE, data );
 
+    glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_WRAP_S, GL_REPEAT);
+    glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_WRAP_T, GL_REPEAT);
+    glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glTexParameterf(GL_TEXTURE_2D,GL_TEXTURE_MIN_FILTER, GL_LINEAR); 
     // free buffer
     free( data );
 
@@ -90,22 +83,25 @@ GLuint LoadTextureRAW( const char * filename, int wrap )
 static bool fullscreen = false;
 void OpenGLInit(void)
 {
+    /*tambahan*/
     glClearColor(0.0f, 0.0f, 0.0f, 1.0f); 
-    glClearDepth(1.0f);                
+    glClearDepth(1.0f);                 
     glEnable(GL_DEPTH_TEST);   
     glDepthFunc(GL_LEQUAL); 
-    glShadeModel(GL_SMOOTH); 
-    glEnable( GL_TEXTURE_2D );  
+    glShadeModel(GL_SMOOTH);  
     glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
+    //glEnable(GL_TEXTURE_GEN_S); //enable texture coordinate generation
+    //glEnable(GL_TEXTURE_GEN_T);
     // load our texture
-    texture = LoadTextureRAW( "texture.jpg", TRUE );
+    glEnable( GL_TEXTURE_2D );  
+    texture2 = LoadTexture( "texture2.bmp");
+    texture1 = LoadTexture( "bricks.bmp");
 }
 
 void render(void)
 { 
     glMatrixMode(GL_MODELVIEW);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    //glBindTexture( GL_TEXTURE_2D, texture );
     //initial position // Move right and into the screen
     for(int i=0;i<27;i++){
         glLoadIdentity();
@@ -136,49 +132,76 @@ void render(void)
         glBegin(GL_QUADS);                // Begin drawing the color cube with 6 quads
         // Top face (y = 0.3f)
         // Define vertices in counter-clockwise (CCW) order with normal pointing out
-        glTexCoord2f(0.0f, 0.0f);     // Yellow
-        glVertex3f(0.15f, 0.15f, -0.15f);
-         glTexCoord2f(0.0f, 1.0f); 
-        glVertex3f(-0.15f, 0.15f, -0.15f);
-         glTexCoord2f(1.0f, 0.0f); 
-        glVertex3f(-0.15f, 0.15f,  0.15f);
-         glTexCoord2f(1.0f, 1.0f); 
-        glVertex3f( 0.15f, 0.15f,  0.15f);
+        glColor3f(1.0f, 1.0f, 0.0f);     // Yellow
 
+        //glGenTextures( 1, &texture1 );
+        glBindTexture( GL_TEXTURE_2D, texture1 );
+        glTexCoord2d(0.0,0.0);
+        glVertex3f(0.15f, 0.15f, -0.15f);
+        glTexCoord2d(1.0,0.0);
+        glVertex3f(-0.15f, 0.15f, -0.15f);
+        glTexCoord2d(0.0,1.0);
+        glVertex3f(-0.15f, 0.15f,  0.15f);
+        glTexCoord2d(1.0,1.0);
+        glVertex3f( 0.15f, 0.15f,  0.15f);
+        glDeleteTextures( 1, &texture1 );
 
         // Bottom face (y = -0.15f)
-        glTexCoord3f(1.0f, 1.0f, 1.0f);     // White
+        glColor3f(1.0f, 1.0f, 1.0f);     // White
+        //glGenTextures( 1, &texture2 );
+        glBindTexture( GL_TEXTURE_2D, texture2 );
+        glTexCoord2d(0.0,0.0);
         glVertex3f( 0.15f, -0.15f,  0.15f);
+        glTexCoord2d(0.0,1.0);
         glVertex3f(-0.15f, -0.15f,  0.15f);
+        glTexCoord2d(1.0,0.0);
         glVertex3f(-0.15f, -0.15f, -0.15f);
+        glTexCoord2d(1.0,1.0);
         glVertex3f( 0.15f, -0.15f, -0.15f);
+        glDeleteTextures( 1, &texture2 );
 
         // Front face  (z = 0.15f)
-        glTexCoord3f(1.0f, 0.0f, 0.0f);     // Red
+        glColor3f(1.0f, 0.0f, 0.0f);     // Red
+        glTexCoord2d(0.0,0.0);
         glVertex3f( 0.15f,  0.15f, 0.15f);
+        glTexCoord2d(0.0,1.0);
         glVertex3f(-0.15f,  0.15f, 0.15f);
+        glTexCoord2d(1.0,0.0);
         glVertex3f(-0.15f, -0.15f, 0.15f);
+        glTexCoord2d(1.0,1.0);
         glVertex3f( 0.15f, -0.15f, 0.15f);
 
         // Back face (z = -0.15f)
-        glTexCoord3f(1.0f, 0.5f, 0.0f);     // Orange
+        glColor3f(0.0f, 1.0f, 0.0f);     // Orange
+        glTexCoord2d(0.0,0.0);
         glVertex3f( 0.15f, -0.15f, -0.15f);
+        glTexCoord2d(0.0,1.0);
         glVertex3f(-0.15f, -0.15f, -0.15f);
+        glTexCoord2d(1.0,0.0);
         glVertex3f(-0.15f,  0.15f, -0.15f);
+        glTexCoord2d(1.0,1.0);
         glVertex3f( 0.15f,  0.15f, -0.15f);
 
         // Left face (x = -0.15f)
-        glTexCoord3f(0.0f, 0.0f, 1.0f);     // Blue
+        glColor3f(0.0f, 0.0f, 1.0f);     // Blue
+        glTexCoord2d(0.0,0.0);
         glVertex3f(-0.15f,  0.15f,  0.15f);
+        glTexCoord2d(0.0,1.0);
         glVertex3f(-0.15f,  0.15f, -0.15f);
+        glTexCoord2d(1.0,0.0);
         glVertex3f(-0.15f, -0.15f, -0.15f);
+        glTexCoord2d(1.0,1.0);
         glVertex3f(-0.15f, -0.15f,  0.15f);
 
         // Right face (x = 0.15f)
-        glTexCoord3f(0.0f, 1.0f, 0.0f);     // Green
+        glColor3f(0.0f, 1.0f, 1.0f);     // Green
+        glTexCoord2d(0.0,0.0);
         glVertex3f(0.15f,  0.15f, -0.15f);
+        glTexCoord2d(0.0,1.0);
         glVertex3f(0.15f,  0.15f,  0.15f);
+        glTexCoord2d(1.0,0.0);
         glVertex3f(0.15f, -0.15f,  0.15f);
+        glTexCoord2d(1.0,1.0);
         glVertex3f(0.15f, -0.15f, -0.15f);
         
         glEnd();  // End of drawing color-cube
