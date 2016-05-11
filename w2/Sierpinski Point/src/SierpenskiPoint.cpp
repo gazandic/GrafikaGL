@@ -2,8 +2,14 @@
 #include <iostream>
 #include <stdio.h>
 #include <stdlib.h>
-#include <GL/gl.h>
-#include <GL/glut.h>
+
+#ifdef __APPLE__
+  #include <OpenGL/gl.h>
+  #include <GLUT/glut.h>
+#else
+  #include <GL/gl.h>
+  #include <GL/glut.h>
+#endif
 
 static bool fullscreen = false;
 int N = 200;    // default density
