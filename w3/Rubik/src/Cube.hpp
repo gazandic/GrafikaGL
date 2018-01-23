@@ -1,13 +1,21 @@
 #ifndef __CUBE
 #define __CUBE 1
 
-#include <GL/gl.h>
 #include <bits/stdc++.h>
+
+#ifdef __APPLE__
+# include <OpenGL/gl.h>
+# include <GLUT/glut.h>
+#elif defined(WIN32)
+# include <Windows.h>
+#endif
+
 #include <GL/glut.h>
 
 struct Cube
 {
-	Cube(){
+	Cube()
+	{
 		this->x = 0;
 		this->y = 0;
 		this->z = 0;
@@ -15,7 +23,8 @@ struct Cube
 		this->yRotated = (GLfloat)0;
 		this->zRotated = (GLfloat)0;
 	}
-	Cube(float x, float y, float z){
+	Cube(float x, float y, float z)
+	{
 		this->x = x;
 		this->y = y;
 		this->z = z;
@@ -23,7 +32,8 @@ struct Cube
 		this->yRotated = (GLfloat)0;
 		this->zRotated = (GLfloat)0;
 	}
-	Cube(const Cube& p){
+	Cube(const Cube &p)
+	{
 		this->x = p.x;
 		this->y = p.y;
 		this->z = p.z;
@@ -31,10 +41,11 @@ struct Cube
 		this->yRotated = p.yRotated;
 		this->zRotated = p.zRotated;
 	}
-	~Cube(){
-
+	~Cube()
+	{
 	}
-	Cube& operator=(const Cube& p) {
+	Cube &operator=(const Cube &p)
+	{
 		this->x = p.x;
 		this->y = p.y;
 		this->z = p.z;
@@ -43,68 +54,87 @@ struct Cube
 		this->zRotated = p.zRotated;
 		return *this;
 	}
-	float getX(){
+	float getX()
+	{
 		return x;
 	}
-	float getY(){
+	float getY()
+	{
 		return y;
 	}
-	float getZ(){
+	float getZ()
+	{
 		return z;
 	}
-	GLfloat getXRotated(){
+	GLfloat getXRotated()
+	{
 		return xRotated;
 	}
-	GLfloat getYRotated(){
+	GLfloat getYRotated()
+	{
 		return yRotated;
 	}
-	GLfloat getZRotated(){
+	GLfloat getZRotated()
+	{
 		return zRotated;
 	}
-	void setX(float x){
+	void setX(float x)
+	{
 		this->x = x;
 	}
-	void setY(float y){
+	void setY(float y)
+	{
 		this->y = y;
 	}
-	void setZ(float z){
-		this->z  = z;
+	void setZ(float z)
+	{
+		this->z = z;
 	}
-	void plusXRotated(float x){
+	void plusXRotated(float x)
+	{
 		this->xRotated += (GLfloat)x;
 	}
-	void plusYRotated(float y){
+	void plusYRotated(float y)
+	{
 		this->yRotated += (GLfloat)y;
 	}
-	void plusZRotated(float z){
-		this->zRotated  += (GLfloat)z;
+	void plusZRotated(float z)
+	{
+		this->zRotated += (GLfloat)z;
 	}
-	void rotate(float tengahX,float tengahY,float tengahZ,float degreeX=0,float degreeY=0,float degreeZ=0){
+	void rotate(float tengahX, float tengahY, float tengahZ, float degreeX = 0, float degreeY = 0, float degreeZ = 0)
+	{
 		x -= tengahX;
 		y -= tengahY;
 		z -= tengahZ;
 		float tempx = x;
 		float tempy = y;
-		float tempz = z; 
-		float radX = degreeX * 3.14159265358979323846 / 180.0 ;
-	    float radY = degreeY * 3.14159265358979323846 / 180.0 ;
-	    float radZ = degreeZ * 3.14159265358979323846 / 180.0 ;
-	   	if (degreeZ) {
-	      x = tempx*cos(radZ)-tempy*sin(radZ);
-	      y = tempx*sin(radZ)+tempy*cos(radZ);
-	    } else if (degreeY) {
-	      x = tempz*sin(radY)+tempx*cos(radY);
-	      z = tempz*cos(radY)-tempx*sin(radY);
-	    } else {
-	      y = tempy*cos(radX)-tempz*sin(radX);
-	      z = tempy*sin(radX)+tempz*cos(radX);
-	    }
-	    x += tengahX;
-	    y += tengahY;
-	    z += tengahZ;
+		float tempz = z;
+		float radX = degreeX * 3.14159265358979323846 / 180.0;
+		float radY = degreeY * 3.14159265358979323846 / 180.0;
+		float radZ = degreeZ * 3.14159265358979323846 / 180.0;
+		if (degreeZ)
+		{
+			x = tempx * cos(radZ) - tempy * sin(radZ);
+			y = tempx * sin(radZ) + tempy * cos(radZ);
+		}
+		else if (degreeY)
+		{
+			x = tempz * sin(radY) + tempx * cos(radY);
+			z = tempz * cos(radY) - tempx * sin(radY);
+		}
+		else
+		{
+			y = tempy * cos(radX) - tempz * sin(radX);
+			z = tempy * sin(radX) + tempz * cos(radX);
+		}
+		x += tengahX;
+		y += tengahY;
+		z += tengahZ;
 	}
-private:
-	float x,y,z;
+
+  private:
+	float x, y, z;
 	GLfloat xRotated, yRotated, zRotated;
 };
 
